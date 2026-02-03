@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abitur Lernzettel - Übersicht</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #d5dbdb 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #000000, #DD0000, #FFCE00);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--secondary-color);
+            display: block;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .subject-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, transparent, rgba(52, 152, 219, 0.1));
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .subject-card.deutsch {
+            border-left-color: #e74c3c;
+        }
+
+        .subject-card.englisch {
+            border-left-color: #3498db;
+        }
+
+        .subject-card.chemie {
+            border-left-color: #9b59b6;
+        }
+
+        .subject-card.its-ith {
+            border-left-color: #1abc9c;
+        }
+
+        .subject-card.ethik {
+            border-left-color: #f39c12;
+        }
+
+        .subject-card.spanisch {
+            border-left-color: #e67e22;
+        }
+
+        .subject-card.geschichte {
+            border-left-color: #95a5a6;
+        }
+
+        .subject-card.sport {
+            border-left-color: #27ae60;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .subject-icon {
+            font-size: 2.5em;
+            flex-shrink: 0;
+        }
+
+        .subject-title {
+            flex: 1;
+        }
+
+        .subject-title h2 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .subject-subtitle {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .subject-description {
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .topic-highlights {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .topic-highlights h4 {
+            color: var(--primary-color);
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .topic-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .topic-list li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .topic-list li::before {
+            content: "▸ ";
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, var(--secondary-color), #2980b9);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+            background: linear-gradient(45deg, #2980b9, var(--secondary-color));
+        }
+
+        .info-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-section p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .feature-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            color: var(--primary-color);
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .feature-content p {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .header p {
+                font-size: 0.95em;
+            }
+
+            .stat-number {
+                font-size: 2em;
+            }
+
+            .stats-container {
+                gap: 20px;
+            }
+
+            .subject-card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .subject-icon {
+                font-size: 2em;
+            }
+
+            .subject-title h2 {
+                font-size: 1.2em;
+            }
+
+            .info-section {
+                padding: 15px;
+            }
+
+            .info-section h3 {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .subject-title h2 {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Abitur Lernzettel</h1>
+            <p>Umfassende Zusammenfassungen für das Gymnasium Baden-Württemberg</p>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Fächer</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2026</span>
+                    <span class="stat-label">Abitur</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Willkommen zu meiner Lernzettel-Sammlung</h3>
+            <p>
+                Diese Sammlung enthält umfassende Lernmaterialien für das Abitur 2026 am Gymnasium in Baden-Württemberg. 
+                Alle Lernzettel sind strukturiert, übersichtlich und speziell auf den Bildungsplan 2021 abgestimmt.
+            </p>
+
+        <div class="main-grid">
+            <!-- Deutsch -->
+            <div class="subject-card deutsch">
+                <div class="subject-header">
+                    <div class="subject-icon">📖</div>
+                    <div class="subject-title">
+                        <h2>Deutsch</h2>
+                        <p class="subject-subtitle">Sprache, Literatur & Epochen</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Umfassende Lernmaterialien zu Sprache und Kommunikation, literarischen Gattungen, Erörterungstechniken und allen relevanten literarischen Epochen von der Aufklärung bis zur Gegenwartsliteratur.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Kommunikationsmodelle & Sprachvarietäten</li>
+                        <li>Epik, Dramatik, Lyrik & Sachtextanalyse</li>
+                        <li>Erörterungstechniken & Argumentation</li>
+                        <li>Literarische Epochen von 750 bis heute</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Deutsch_ABI_Lernzettel/" class="btn" target="_blank">Zum Deutsch-Lernzettel →</a>
+            </div>
+
+            <!-- Englisch -->
+            <div class="subject-card englisch">
+                <div class="subject-header">
+                    <div class="subject-icon">🇬🇧</div>
+                    <div class="subject-title">
+                        <h2>Englisch</h2>
+                        <p class="subject-subtitle">Language, Literature & Culture</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Lernzettel für das Englisch-Abitur mit Fokus auf Textanalyse, Grammatik, Vokabular und interkulturelle Kompetenzen. Inklusive Literatur und landeskundlicher Themen.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Text Analysis & Literary Devices</li>
+                        <li>Grammar & Advanced Vocabulary</li>
+                        <li>British & American Literature</li>
+                        <li>Cultural Studies & Global Issues</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Englisch_ABI_Lernzettel/" class="btn" target="_blank">Zum Englisch-Lernzettel →</a>
+            </div>
+
+            <!-- Chemie -->
+            <div class="subject-card chemie">
+                <div class="subject-header">
+                    <div class="subject-icon">⚗️</div>
+                    <div class="subject-title">
+                        <h2>Chemie</h2>
+                        <p class="subject-subtitle">Allgemeine, Organische & Anorganische Chemie</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Strukturierte Zusammenfassungen zu allen chemischen Grundlagen: Atombau, chemische Bindungen, Reaktionskinetik, organische Verbindungen, Säuren & Basen und Elektrochemie.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Atombau, PSE & Chemische Bindung</li>
+                        <li>Reaktionskinetik & Thermodynamik</li>
+                        <li>Organische Chemie & Stoffklassen</li>
+                        <li>Säure-Base & Elektrochemie</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Chemie_ABI_Lernzettel/" class="btn" target="_blank">Zum Chemie-Lernzettel →</a>
+            </div>
+
+            <!-- ITS/ITH -->
+            <div class="subject-card its-ith">
+                <div class="subject-header">
+                    <div class="subject-icon">💻</div>
+                    <div class="subject-title">
+                        <h2>ITS & ITH</h2>
+                        <p class="subject-subtitle">Informationstechnik & IT-Sicherheit</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Lernmaterialien zu Netzwerktechnik, IT-Sicherheit, Programmierung, Datenbanken und Hardware. Ideal für technische Gymnasien mit IT-Schwerpunkt.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Netzwerktechnik & Protokolle</li>
+                        <li>IT-Sicherheit & Kryptographie</li>
+                        <li>Programmierung & Algorithmen</li>
+                        <li>Datenbanken & SQL</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/ITS-ITH_ABI_Lernzettel/" class="btn" target="_blank">Zum ITS/ITH-Lernzettel →</a>
+            </div>
+
+            <!-- Ethik -->
+            <div class="subject-card ethik">
+                <div class="subject-header">
+                    <div class="subject-icon">🤔</div>
+                    <div class="subject-title">
+                        <h2>Ethik</h2>
+                        <p class="subject-subtitle">Moralphilosophie & Ethische Theorien</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Übersicht über ethische Theorien, Moralphilosophie, angewandte Ethik und philosophische Grundfragen. Von der Antike bis zur modernen Ethik.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Ethische Grundbegriffe & Theorien</li>
+                        <li>Kant, Mill & Tugendethik</li>
+                        <li>Angewandte Ethik (Medizin, Umwelt)</li>
+                        <li>Moral & Verantwortung</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Ethik_ABI_Lernzettel/" class="btn" target="_blank">Zum Ethik-Lernzettel →</a>
+            </div>
+
+            <!-- Spanisch -->
+            <div class="subject-card spanisch">
+                <div class="subject-header">
+                    <div class="subject-icon">🇪🇸</div>
+                    <div class="subject-title">
+                        <h2>Spanisch</h2>
+                        <p class="subject-subtitle">Lengua, Literatura & Cultura</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Spanisch-Lernzettel mit Grammatik, Vokabular, Textanalyse und landeskundlichen Themen zu Spanien und Lateinamerika.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Gramática & Vocabulario avanzado</li>
+                        <li>Análisis de textos literarios</li>
+                        <li>España & América Latina</li>
+                        <li>Temas sociales & culturales</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Spanisch_ABI_Lernzettel/" class="btn" target="_blank">Zum Spanisch-Lernzettel →</a>
+            </div>
+
+            <!-- Geschichte & Gemeinschaftskunde -->
+            <div class="subject-card geschichte">
+                <div class="subject-header">
+                    <div class="subject-icon">🏛️</div>
+                    <div class="subject-title">
+                        <h2>Geschichte & GK</h2>
+                        <p class="subject-subtitle">Von der Antike bis zur Gegenwart</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Umfassende Zusammenfassungen zur deutschen und europäischen Geschichte sowie zu politischen Systemen, Gesellschaft und aktuellen politischen Themen.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Deutsche Geschichte 19./20. Jahrhundert</li>
+                        <li>Weimarer Republik & NS-Zeit</li>
+                        <li>Kalter Krieg & Deutsche Teilung</li>
+                        <li>Politische Systeme & Demokratie</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Geschichte_und_Gemeinschaftskunde_ABI_Lernzettel/index.html" class="btn" target="_blank">Zum Geschichte-Lernzettel →</a>
+            </div>
+
+            <!-- Sport -->
+            <div class="subject-card sport">
+                <div class="subject-header">
+                    <div class="subject-icon">⚽</div>
+                    <div class="subject-title">
+                        <h2>Sport</h2>
+                        <p class="subject-subtitle">Sporttheorie & Trainingslehre</p>
+                    </div>
+                </div>
+                <div class="subject-description">
+                    Lernzettel zur Sporttheorie mit Trainingslehre, Bewegungslehre, Sportbiologie und sportsoziologischen Aspekten für das Sport-Abitur.
+                </div>
+                <div class="topic-highlights">
+                    <h4>Schwerpunkte:</h4>
+                    <ul class="topic-list">
+                        <li>Trainingslehre & Trainingsmethoden</li>
+                        <li>Bewegungslehre & Motorik</li>
+                        <li>Sportbiologie & Anatomie</li>
+                        <li>Sport & Gesellschaft</li>
+                    </ul>
+                </div>
+                <a href="https://baadjid.github.io/Sport_ABI_Lernzettel/" class="btn" target="_blank">Zum Sport-Lernzettel →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📚 Lernzettel-Sammlung für das Abitur 2026</p>
+            <p>Gymnasium Baden-Württemberg | Bildungsplan 2021</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Erstellt von Kirill Heldt| Viel Erfolg bei der Vorbereitung! 🎓
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth entrance animation for cards
+            const cards = document.querySelectorAll('.subject-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Add click feedback to buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    this.style.transform = 'scale(0.95) translateY(-2px)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Enhanced hover effects for cards
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Log welcome message
+            console.log('✅ Abitur Lernzettel Übersicht geladen!');
+            console.log('📚 8 Fächer verfügbar');
+            console.log('🎓 Viel Erfolg bei der Vorbereitung!');
+        });
+
+        // Keyboard shortcut: Press 'H' to scroll to top
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.altKey) {
+                const active = document.activeElement;
+                if (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
